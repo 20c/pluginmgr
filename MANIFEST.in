@@ -1,0 +1,3 @@
+recursive-include vaping *.py
+recursive-include facsimile *.txt
+include facsimile/VERSION
