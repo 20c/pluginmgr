@@ -3,6 +3,7 @@
 *.egg-info
 .cache/
 .coverage
-.tox/
+.tox
 coverage.xml
 dist/
+site/

@@ -1,3 +1,4 @@
-recursive-include vaping *.py
+include LICENSE
 recursive-include facsimile *.txt
+recursive-include pluginmgr *.py
 include facsimile/VERSION
