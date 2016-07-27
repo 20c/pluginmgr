@@ -1,43 +1,108 @@
 
+import imp
 import collections
 import importlib
 import logging
 import munge.util
+import os
 import re
 import sys
 
 
 class SearchPathImporter(object):
-    # XXX search path
-    def __init__(self, namespace, searchpath):
+    """
+    import hook to dynamically load modules from a search path
+
+    """
+    def __init__(self, namespace, searchpath, create_loader):
+        if not searchpath:
+            raise ValueError("searchpath must be defined")
+        self.package = namespace.split('.')[0]
+        self.namespace = namespace
         self.log = logging.getLogger(__name__)
-        self.re_ns = re.compile("%s\.(.*)$" % re.escape(namespace))
-        self.searchpath = searchpath
+        self.re_ns = re.compile("^%s\.(.*)$" % re.escape(self.namespace))
+        self.log.debug("hook.compile(%s)", self.namespace)
+        if isinstance(searchpath, basestring):
+            self.searchpath = [searchpath]
+        else:
+            self.searchpath = searchpath
+
+        self.create_loader = create_loader
 
     # import hooks
     def find_module(self, fullname, path=None):
-        self.log.debug("hook.find(%s, %s)", fullname, path)
+        self.log.debug("hook.namespace %s", self.namespace)
+        self.log.debug("hook.find(%s, %s) loader=%d", fullname, path, int(self.create_loader))
+        if self.create_loader:
+            if fullname == self.package:
+                try:
+                    importlib.import_module(fullname)
+                except ImportError:
+                    return self
+                return
+            if fullname == self.namespace:
+                return self
+
         m = self.re_ns.match(fullname)
+        self.log.debug("match %s", str(m))
+
         if not m:
             return
 
         name = m.group(1)
-        self.log.debug("hook.found %s", name)
-        return
+        self.log.debug("hook.match %s", name)
+        if self.find_file(name):
+            return self
 
-#        print "hook, internal cache", self._class
-#        if name in self._class:
-#            return self
+    def find_file(self, name):
+        for each in self.searchpath:
+            fq_path = os.path.join(each, name + '.py')
+            self.log.debug("checking %s", fq_path)
+            if os.path.isfile(fq_path):
+                return fq_path
 
     def load_module(self, name):
         self.log.debug("hook.load(%s)", name)
         if name in sys.modules:
             return sys.modules[name]
 
-        raise ImportError(name)
+        # build package for loader if it doesn't exist
+# XXX shouldn't need it here as well
+        if self.create_loader:
+            if name == self.package or name == self.namespace:
+                self.log.debug("hook.create_loader(%s)", name)
+                # make a new loader module
+                mod = imp.new_module(name)
+
+                # Set a few properties required by PEP 302
+                mod.__file__ = self.namespace
+                mod.__name__ = name
+                mod.__path__ = self.searchpath
+                mod.__loader__ = self
+                mod.__package__ = '.'.join(name.split('.')[:-1])
+                sys.modules[name] = mod
+                return mod
+
+        m = self.re_ns.match(name)
+        self.log.debug("match %s", str(m))
+
+        if not m:
+            raise ImportError(name)
+
+        name = m.group(1)
+        filename = self.find_file(name)
+        self.log.debug("hook.found(%s)", filename)
+
+
+        mod = imp.load_source(name, filename)
+        sys.modules[name] = mod
+        return mod
 
 
 class PluginBase(object):
+    """
+    Base class for plugins, set config and call init()
+    """
     def __init__(self, config):
         self.config = config
         self.init()
@@ -47,16 +112,25 @@ class PluginBase(object):
 
 
 class PluginManager(object):
-    def __init__(self, namespace, searchpath=None):
+    """
+    """
+    def __init__(self, namespace, searchpath=None, create_loader=False):
+        """
+            namespace to import from (what you could type after `import`
+            searchpath a directory or list of directories to search in
+            create_loader determines if this should create a blank loader to
+                          import through. This should be enabled if there isn't
+                          a real module path for the namespace and disabled for
+                          sharing the namespace with static modules
+        """
         self._class = {}
         self._instance = {}
         self.log = logging.getLogger(__name__)
         self.namespace = namespace
 
-        #sys.meta_path.append(self)
-# XXX move to method?
-        self.__imphook = SearchPathImporter(namespace, searchpath)
-        sys.meta_path.append(self.__imphook)
+        if searchpath:
+            self._imphook = SearchPathImporter(namespace, searchpath, create_loader)
+            sys.meta_path.append(self._imphook)
 
     def register(self, typ):
         """ register a plugin """
