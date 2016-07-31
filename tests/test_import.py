@@ -26,6 +26,12 @@ def test_static_import():
     assert static0
 
 
+def test_import_nonexistant():
+    with pytest.raises(ImportError):
+        from pluginmgr_test.plugins import nonexistant
+
+
 def test_dyn_import():
     from pluginmgr_test.plugins import mod0
+    assert mod0
 

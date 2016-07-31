@@ -88,7 +88,6 @@ class SearchPathImporter(object):
         filename = self.find_file(name)
         self.log.debug("hook.found(%s)", filename)
 
-
         mod = imp.load_source(name, filename)
         sys.modules[name] = mod
         return mod
