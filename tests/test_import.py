@@ -21,6 +21,9 @@ def disable_loader():
 
 def test_static_import():
     from pluginmgr_test.plugins import static0
+    assert static0
+    from pluginmgr_test.plugins import static0
+    assert static0
 
 
 def test_dyn_import():

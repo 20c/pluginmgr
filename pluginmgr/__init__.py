@@ -61,25 +61,22 @@ class SearchPathImporter(object):
 
     def load_module(self, name):
         self.log.debug("hook.load(%s)", name)
-        if name in sys.modules:
-            return sys.modules[name]
 
         # build package for loader if it doesn't exist
-# XXX shouldn't need it here as well
-        if self.create_loader:
-            if name == self.package or name == self.namespace:
-                self.log.debug("hook.create_loader(%s)", name)
-                # make a new loader module
-                mod = imp.new_module(name)
+# don't need to check for create_loader here, checks in find_module
+        if name == self.package or name == self.namespace:
+            self.log.debug("hook.create_loader(%s)", name)
+            # make a new loader module
+            mod = imp.new_module(name)
 
-                # Set a few properties required by PEP 302
-                mod.__file__ = self.namespace
-                mod.__name__ = name
-                mod.__path__ = self.searchpath
-                mod.__loader__ = self
-                mod.__package__ = '.'.join(name.split('.')[:-1])
-                sys.modules[name] = mod
-                return mod
+            # Set a few properties required by PEP 302
+            mod.__file__ = self.namespace
+            mod.__name__ = name
+            mod.__path__ = self.searchpath
+            mod.__loader__ = self
+            mod.__package__ = '.'.join(name.split('.')[:-1])
+            sys.modules[name] = mod
+            return mod
 
         m = self.re_ns.match(name)
         self.log.debug("match %s", str(m))
