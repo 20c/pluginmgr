@@ -15,8 +15,6 @@ class SearchPathImporter(object):
 
     """
     def __init__(self, namespace, searchpath, create_loader):
-        if not searchpath:
-            raise ValueError("searchpath must be defined")
         self.package = namespace.split('.')[0]
         self.namespace = namespace
         self.log = logging.getLogger(__name__)

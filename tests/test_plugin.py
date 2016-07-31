@@ -67,6 +67,13 @@ class ProbePlugin1(ProbeBase):
     def probe(self):
         return []
 
+def test_searchpath_init():
+    # doesn't use import hook if no search path
+    assert pluginmgr.PluginManager('pluginmgr.tests')
+    assert pluginmgr.PluginManager('pluginmgr.tests', 'string/search/path')
+    assert pluginmgr.PluginManager('pluginmgr.tests', ['list/search', '/path'])
+
+
 def test_plugin_registry():
     assert Plugin0 == plugin.get_plugin_class('plugin0')
     with pytest.raises(ValueError):
@@ -76,6 +83,7 @@ def test_plugin_registry():
         @plugin.register('plugin0')
         class p0(PluginBase):
             pass
+
 
 def test_plugin_instance():
     with pytest.raises(ValueError):
