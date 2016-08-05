@@ -93,12 +93,15 @@ class SearchPathImporter(object):
         return mod
 
 
+# TODO move this to test / docs
 class PluginBase(object):
     """
-    Base class for plugins, set config and call init()
+    Example base class for plugins, set config and call init()
     """
-    def __init__(self, config):
+    def __init__(self, config, *args, **kwargs):
         self.config = config
+        self.args = args
+        self.kwargs = kwargs
         self.init()
 
     def init(self):
@@ -154,7 +157,7 @@ class PluginManager(object):
         raise ValueError("unknown plugin '%s'" % typ)
 
 # config plugin only
-    def _ctor(self, typ, config):
+    def _ctor(self, typ, config, *args, **kwargs):
         self.log.debug("ctor: self._instance %s", str(self._instance))
         self.log.debug("ctor: self._class %s", str(self._class))
         if typ in self._instance:
@@ -164,13 +167,15 @@ class PluginManager(object):
             munge.util.recursive_update(cp, config)
             return type(obj)(cp)
         # try to load
-        return self.get_plugin_class(typ)(config)
+        return self.get_plugin_class(typ)(config, *args, **kwargs)
         # FIXME - raise error, list configured class/instance
 
 # config plugin only
-    def new_plugin(self, config):
-        """ instantiate a plugin """
-
+    def new_plugin(self, config, *args, **kwargs):
+        """
+        instantiate a plugin
+        creates the object, stores it in _instance
+        """
         obj = None
 
         # if type is defined, create a new instance
@@ -182,7 +187,7 @@ class PluginManager(object):
         elif isinstance(config, collections.Mapping) and len(config) == 1:
             # get type name and shift out config to parent level
             (typ, config) = config.items()[0]
-            obj = self._ctor(typ, config)
+            obj = self._ctor(typ, config, *args, **kwargs)
 
         # need to check for None, Greenlets return False
         if obj is None:
@@ -200,7 +205,12 @@ class PluginManager(object):
 
 # config plugin only
     def get_instance(self, node):
-        """ get plugin instance from config node """
+        """
+        get plugin instance from config node
+        *NOTE* returns an uninitialized instance if one isn't there
+        *NOTE* instantiated plugins without names remain anonymous
+               FIXME - why would instantiate() even process them
+        """
         # string is a ref to an existing plugin instance
         if isinstance(node, basestring):
             if node in self._instance:
@@ -214,11 +224,11 @@ class PluginManager(object):
         raise ValueError("unable to parse plugin for output %s" % str(node))
 
 # config plugin only
-    def instantiate(self, config):
+    def instantiate(self, config, *args, **kwargs):
         """
         takes plugin config (list under 'plugin') and instantiates defined
         plugins
         """
         for plugin_config in config:
-            self.new_plugin(plugin_config)
+            self.new_plugin(plugin_config, *args, **kwargs)
 
