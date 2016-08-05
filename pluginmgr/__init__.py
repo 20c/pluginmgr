@@ -63,7 +63,7 @@ class SearchPathImporter(object):
         self.log.debug("hook.load(%s)", name)
 
         # build package for loader if it doesn't exist
-# don't need to check for create_loader here, checks in find_module
+        # don't need to check for create_loader here, checks in find_module
         if name == self.package or name == self.namespace:
             self.log.debug("hook.create_loader(%s)", name)
             # make a new loader module
@@ -110,9 +110,9 @@ class PluginManager(object):
     """
     def __init__(self, namespace, searchpath=None, create_loader=False):
         """
-            namespace to import from (what you could type after `import`
-            searchpath a directory or list of directories to search in
-            create_loader determines if this should create a blank loader to
+            namespace: import from (what you would type after `import`)
+            searchpath: a directory or list of directories to search in
+            create_loader: determines if this should create a blank loader to
                           import through. This should be enabled if there isn't
                           a real module path for the namespace and disabled for
                           sharing the namespace with static modules
@@ -128,8 +128,8 @@ class PluginManager(object):
 
     def register(self, typ):
         """ register a plugin """
-    # should be able to combine class/instance namespace, and inherit from either
-    # would need to store meta or rely on copy ctor
+        # should be able to combine class/instance namespace, and inherit from either
+        # would need to store meta or rely on copy ctor
         def _func(cls):
             if typ in self._class:
                 raise ValueError("duplicated type name '%s'" % typ)
@@ -137,8 +137,6 @@ class PluginManager(object):
             self._class[typ] = cls
             return cls
         return _func
-
-    # if plugins can be probes or output, define characteristics, then could use same instance for both
 
     def get_plugin_class(self, typ):
         if typ in self._class:
@@ -167,13 +165,11 @@ class PluginManager(object):
             return type(obj)(cp)
         # try to load
         return self.get_plugin_class(typ)(config)
-    # FIXME - raise error, list configured class/instance
+        # FIXME - raise error, list configured class/instance
 
 # config plugin only
     def new_plugin(self, config):
         """ instantiate a plugin """
-    #    if 'type' not in config:
-    #        raise ValueError("unknown plugin type '%s'" % str(config))
 
         obj = None
 
@@ -182,9 +178,8 @@ class PluginManager(object):
             typ = config['type']
             obj = self._ctor(typ, config)
 
-    # XXX does not check for mapping, len() could be a str
         # single key is overriding an existing plugin instance
-        elif len(config) == 1:
+        elif isinstance(config, collections.Mapping) and len(config) == 1:
             # get type name and shift out config to parent level
             (typ, config) = config.items()[0]
             obj = self._ctor(typ, config)
@@ -218,8 +213,12 @@ class PluginManager(object):
 
         raise ValueError("unable to parse plugin for output %s" % str(node))
 
+# config plugin only
     def instantiate(self, config):
-        """ takes plugin config (list under 'plugin') and instantiates defined plugins """
-        for plugin in config:
-            self.new_plugin(plugin)
+        """
+        takes plugin config (list under 'plugin') and instantiates defined
+        plugins
+        """
+        for plugin_config in config:
+            self.new_plugin(plugin_config)
 
