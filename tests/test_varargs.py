@@ -82,3 +82,11 @@ def test_instantiate():
     assert args == obj.args
     assert kwargs == obj.kwargs
 
+    # test named type inherit / copy
+    ntype_conf = nconf.copy()
+    ntype_conf.update({'type': 'test_instantiate'})
+    obj = plugin.new_plugin(ntype_conf, *args, **kwargs)
+    assert ntype_conf == obj.config
+    assert args == obj.args
+    assert kwargs == obj.kwargs
+

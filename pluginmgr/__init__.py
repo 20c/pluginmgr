@@ -165,7 +165,7 @@ class PluginManager(object):
             obj = self._instance[typ]
             cp = obj.config.copy()
             munge.util.recursive_update(cp, config)
-            return type(obj)(cp)
+            return type(obj)(cp, *args, **kwargs)
         # try to load
         return self.get_plugin_class(typ)(config, *args, **kwargs)
         # FIXME - raise error, list configured class/instance
