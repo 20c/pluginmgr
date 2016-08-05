@@ -205,7 +205,7 @@ class PluginManager(object):
         return obj
 
 # config plugin only
-    def get_instance(self, node):
+    def get_instance(self, node, *args, **kwargs):
         """
         get plugin instance from config node
         *NOTE* returns an uninitialized instance if one isn't there
@@ -217,10 +217,10 @@ class PluginManager(object):
             if node in self._instance:
                 return self._instance[node]
             # if not an instance, try for init with empty config
-            return self.new_plugin({'type': node})
+            return self.new_plugin({'type': node}, *args, **kwargs)
 
         if isinstance(node, collections.Mapping):
-            return self.new_plugin(node)
+            return self.new_plugin(node, *args, **kwargs)
 
         raise ValueError("unable to parse plugin for output %s" % str(node))
 

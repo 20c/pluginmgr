@@ -14,6 +14,8 @@ import pluginmgr_test
 from pluginmgr_test import plugin
 
 config = {'fake': 'config'}
+typconf = config.copy()
+typconf.update({'type': 'static0'})
 args = (1, 2, 5, 'three sir')
 kwargs = {'feast': 'lambs', 'and': 'cereals'}
 
@@ -51,10 +53,8 @@ def test_both():
 
 
 def test_new_plugin_type():
-    conf = config.copy()
-    conf.update({'type': 'static0'})
-    obj = plugin.new_plugin(conf, *args, **kwargs)
-    assert conf == obj.config
+    obj = plugin.new_plugin(typconf, *args, **kwargs)
+    assert typconf == obj.config
     assert args == obj.args
     assert kwargs == obj.kwargs
 
@@ -65,4 +65,20 @@ def test_new_plugin():
     assert args == obj.args
     assert kwargs == obj.kwargs
 
+
+def test_get_instance_anonymous():
+    obj = plugin.get_instance(typconf, *args, **kwargs)
+    assert typconf == obj.config
+    assert args == obj.args
+    assert kwargs == obj.kwargs
+
+
+def test_instantiate():
+    nconf = config.copy()
+    nconf.update({'name': 'test_instantiate'})
+    plugin.instantiate([{'static0': nconf}], *args, **kwargs)
+    obj = plugin.get_instance('test_instantiate')
+    assert nconf == obj.config
+    assert args == obj.args
+    assert kwargs == obj.kwargs
 
