@@ -50,19 +50,19 @@ def test_both():
     assert kwargs == obj.kwargs
 
 
+def test_new_plugin_type():
+    conf = config.copy()
+    conf.update({'type': 'static0'})
+    obj = plugin.new_plugin(conf, *args, **kwargs)
+    assert conf == obj.config
+    assert args == obj.args
+    assert kwargs == obj.kwargs
+
+
 def test_new_plugin():
     obj = plugin.new_plugin({'static0': config}, *args, **kwargs)
     assert config == obj.config
     assert args == obj.args
     assert kwargs == obj.kwargs
 
-
-def test_instantiate():
-    nconf = config.copy()
-    nconf.update({'name': 'test_instantiate'})
-    plugin.instantiate([{'static0': nconf}], *args, **kwargs)
-    obj = plugin.get_instance('test_instantiate')
-    assert nconf == obj.config
-    assert args == obj.args
-    assert kwargs == obj.kwargs
 

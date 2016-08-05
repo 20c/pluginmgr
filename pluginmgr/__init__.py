@@ -176,18 +176,19 @@ class PluginManager(object):
         instantiate a plugin
         creates the object, stores it in _instance
         """
+        typ = None
         obj = None
 
         # if type is defined, create a new instance
         if 'type' in config:
             typ = config['type']
-            obj = self._ctor(typ, config)
 
         # single key is overriding an existing plugin instance
         elif isinstance(config, collections.Mapping) and len(config) == 1:
             # get type name and shift out config to parent level
             (typ, config) = config.items()[0]
-            obj = self._ctor(typ, config, *args, **kwargs)
+
+        obj = self._ctor(typ, config, *args, **kwargs)
 
         # need to check for None, Greenlets return False
         if obj is None:
