@@ -32,12 +32,9 @@ class SearchPathImporter(object):
         self.log.debug("hook.namespace %s", self.namespace)
         self.log.debug("hook.find(%s, %s) loader=%d", fullname, path, int(self.create_loader))
         if self.create_loader:
+            # trying to import package level creates an infinite loop
             if fullname == self.package:
-                try:
-                    importlib.import_module(fullname)
-                except ImportError:
-                    return self
-                return
+                return self
             if fullname == self.namespace:
                 return self
 
