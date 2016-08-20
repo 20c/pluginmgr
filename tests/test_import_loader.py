@@ -37,7 +37,7 @@ def test_dyn_import():
 
 
 def test_standalone_import():
-    hook = pluginmgr.SearchPathImporter("standalone", os.path.join(os.path.dirname(__file__), "data", "standalone"), False)
+    hook = pluginmgr.SearchPathImporter("standalone", os.path.join(os.path.dirname(__file__), "data", "standalone"), True)
     sys.meta_path.append(hook)
     mod = importlib.import_module("standalone.mod0.submodule")
     assert mod.test == 1
