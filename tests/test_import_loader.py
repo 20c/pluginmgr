@@ -20,9 +20,6 @@ def set_loader():
 
 
 def test_static_import():
-    # NOTE this doesn't work because py.test has already loaded static0 so it's
-    # in the module cache
-    return
     with pytest.raises(ImportError):
         from pluginmgr_test.plugins import static0
 
