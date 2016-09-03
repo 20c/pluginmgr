@@ -20,12 +20,21 @@ class SearchPathImporter(object):
         self.log = logging.getLogger(__name__)
         self.re_ns = re.compile("^%s\.(.*)$" % re.escape(self.namespace))
         self.log.debug("hook.compile(%s)", self.namespace)
-        if isinstance(searchpath, basestring):
-            self.searchpath = [searchpath]
-        else:
-            self.searchpath = searchpath
-
+        self.searchpath = searchpath
         self.create_loader = create_loader
+
+    @property
+    def searchpath(self):
+        return getattr(self, '_searchpath', [])
+
+    @searchpath.setter
+    def searchpath(self, value):
+        if not value:
+            self._searchpath = []
+        elif isinstance(value, basestring):
+            self._searchpath = [value]
+        else:
+            self._searchpath = value
 
     # import hooks
     def find_module(self, fullname, path=None):
@@ -66,7 +75,7 @@ class SearchPathImporter(object):
             # make a new loader module
             mod = imp.new_module(name)
 
-            # Set a few properties required by PEP 302
+            # set a few properties required by PEP 302
             mod.__file__ = self.namespace
             mod.__name__ = name
             mod.__path__ = self.searchpath
@@ -119,12 +128,30 @@ class PluginManager(object):
         """
         self._class = {}
         self._instance = {}
+        self._imphook = None
         self.log = logging.getLogger(__name__)
         self.namespace = namespace
+        self.create_loader = create_loader
 
-        if searchpath:
-            self._imphook = SearchPathImporter(namespace, searchpath, create_loader)
-            sys.meta_path.append(self._imphook)
+        self.searchpath = searchpath
+
+    @property
+    def searchpath(self):
+        if self._imphook:
+            return self._imphook.searchpath
+        return None
+
+    @searchpath.setter
+    def searchpath(self, value):
+        if self._imphook:
+            self._imphook.searchpath = value
+            return
+
+        if not value:
+            return
+
+        self._imphook = SearchPathImporter(self.namespace, value, self.create_loader)
+        sys.meta_path.append(self._imphook)
 
     def register(self, typ):
         """ register a plugin """
