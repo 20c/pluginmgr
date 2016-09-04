@@ -5,6 +5,8 @@
 ### Added
 ### Fixed
 ### Changed
+- check searchpath for null values
+
 ### Deprecated
 ### Removed
 ### Security

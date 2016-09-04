@@ -34,7 +34,7 @@ class SearchPathImporter(object):
         elif isinstance(value, basestring):
             self._searchpath = [value]
         else:
-            self._searchpath = value
+            self._searchpath = [x for x in value if x]
 
     # import hooks
     def find_module(self, fullname, path=None):

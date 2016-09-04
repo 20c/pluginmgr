@@ -18,6 +18,27 @@ def test_searchpath_get_none():
     assert not plugin.searchpath
 
 
+def test_searchpath_set_none():
+    plugin = pluginmgr.PluginManager('static_only', create_loader=True)
+    plugin.searchpath = None
+    with pytest.raises(ImportError):
+        from static_only import Nothing
+
+
+def test_searchpath_set_none_list():
+    plugin = pluginmgr.PluginManager('static_only', create_loader=True)
+    plugin.searchpath = [None]
+    with pytest.raises(ImportError):
+        from static_only import Nothing
+
+
+def test_searchpath_set_empty_list():
+    plugin = pluginmgr.PluginManager('static_only', create_loader=True)
+    plugin.searchpath = []
+    with pytest.raises(ImportError):
+        from static_only import Nothing
+
+
 def test_searchpath_update_init():
     plugin = pluginmgr.PluginManager('static_only', create_loader=True)
     plugin.searchpath = pluginmgr_test.plugin.searchpath
