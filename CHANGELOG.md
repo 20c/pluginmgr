@@ -3,15 +3,21 @@
 
 ## [Unreleased]
 ### Added
-- py3 support
 ### Fixed
-- always use full module name in sys.modules
 ### Changed
-- check searchpath for null values
-
 ### Deprecated
 ### Removed
 ### Security
+
+## [0.4.0]
+### Added
+- py3 support
+
+### Fixed
+- always use full module name in sys.modules
+
+### Changed
+- check searchpath for null values
 
 
 ## [0.3.0]
