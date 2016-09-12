@@ -1,3 +1,6 @@
+from builtins import str
+from past.builtins import basestring
+from builtins import object
 
 import imp
 import collections
@@ -65,37 +68,48 @@ class SearchPathImporter(object):
             if os.path.isfile(fq_path):
                 return fq_path
 
-    def load_module(self, name):
-        self.log.debug("hook.load(%s)", name)
+    def load_module(self, fullname):
+        self.log.debug("hook.load(%s)", fullname)
 
         # build package for loader if it doesn't exist
         # don't need to check for create_loader here, checks in find_module
-        if name == self.package or name == self.namespace:
-            self.log.debug("hook.create_loader(%s)", name)
+        if fullname == self.package or fullname == self.namespace:
+            self.log.debug("hook.create_loader(%s)", fullname)
             # make a new loader module
-            mod = imp.new_module(name)
+            mod = imp.new_module(fullname)
 
             # set a few properties required by PEP 302
             mod.__file__ = self.namespace
-            mod.__name__ = name
+            mod.__name__ = fullname
             mod.__path__ = self.searchpath
             mod.__loader__ = self
-            mod.__package__ = '.'.join(name.split('.')[:-1])
-            sys.modules[name] = mod
+            mod.__package__ = '.'.join(fullname.split('.')[:-1])
+            sys.modules[fullname] = mod
             return mod
 
-        m = self.re_ns.match(name)
+        m = self.re_ns.match(fullname)
         self.log.debug("match %s", str(m))
 
         if not m:
-            raise ImportError(name)
+            raise ImportError(fullname)
 
         name = m.group(1)
         filename = self.find_file(name)
+        if not filename:
+            raise ImportError(fullname)
         self.log.debug("hook.found(%s)", filename)
 
-        mod = imp.load_source(name, filename)
-        sys.modules[name] = mod
+        # py3+
+        if hasattr(importlib, 'machinery'):
+            loader = importlib.machinery.SourceFileLoader(fullname, filename)
+            mod = loader.load_module()
+        else:
+            mod = imp.load_source(name, filename)
+
+        self.log.debug("hook.loaded(%s) - %s", fullname, str(mod))
+
+        if not mod:
+            raise ImportError(name)
         return mod
 
 
@@ -210,7 +224,7 @@ class PluginManager(object):
         # single key is overriding an existing plugin instance
         elif isinstance(config, collections.Mapping) and len(config) == 1:
             # get type name and shift out config to parent level
-            (typ, config) = config.items()[0]
+            (typ, config) = list(config.items())[0]
 
         obj = self._ctor(typ, config, *args, **kwargs)
 

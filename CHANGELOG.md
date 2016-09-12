@@ -3,6 +3,7 @@
 
 ## [Unreleased]
 ### Added
+- py3 support
 ### Fixed
 ### Changed
 - check searchpath for null values
