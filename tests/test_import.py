@@ -34,4 +34,5 @@ def test_import_nonexistant():
 def test_dyn_import():
     from pluginmgr_test.plugins import mod0
     assert mod0
+    assert 'pluginmgr_test.plugins.mod0' in sys.modules
 

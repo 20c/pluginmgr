@@ -110,6 +110,7 @@ class SearchPathImporter(object):
 
         if not mod:
             raise ImportError(name)
+        sys.modules[fullname] = mod
         return mod
 
 
