@@ -1,5 +1,10 @@
 
+python-targets:
+  - 2
+  - 3
+
 strictness: high
+max-line-length: 132
 
 requirements:
   - facsimile/requirements.txt
@@ -8,9 +13,7 @@ pep8:
   full: true
   options:
     hang-closing: 1
-    max-line-length: 132
 
 pylint:
   disable:
     - too-few-public-methods
-
