@@ -6,10 +6,12 @@ branches:
   except:
     - gh-pages
 env:
+  - TOX_ENV=init
   - TOX_ENV=py27
   - TOX_ENV=py34
   - TOX_ENV=py35
   - TOX_ENV=py36
+  - TOX_ENV=finish
 before_install:
   - sudo apt-get -qq update
 install:
