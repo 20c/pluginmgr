@@ -17,3 +17,5 @@ pep8:
 pylint:
   disable:
     - too-few-public-methods
+    - redefined-builtin
+
