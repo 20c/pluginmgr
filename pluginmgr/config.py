@@ -24,7 +24,7 @@ class PluginBase(object):
 
 class ConfigPluginManager(pluginmgr.PluginManager):
     def _ctor(self, typ, config, *args, **kwargs):
-        self.log.debug("ctor: self._instance=%s self._class=%s" % (str(self._instance), str(self._class)))
+        self.log.debug("ctor: self._instance=%s self._class=%s", str(self._instance), str(self._class))
         if typ in self._instance:
             # get class type, copy config, override with passed config
             obj = self._instance[typ]

@@ -16,17 +16,18 @@ class SearchPathImporter(object):
 
     """
     def __init__(self, namespace, searchpath, create_loader):
+        self._searchpath = []
         self.package = namespace.split('.')[0]
         self.namespace = namespace
         self.log = logging.getLogger(__name__)
-        self.re_ns = re.compile("^%s\.(.*)$" % re.escape(self.namespace))
+        self.re_ns = re.compile(r"^%s\.(.*)$" % re.escape(self.namespace))
         self.log.debug("hook.compile(%s)", self.namespace)
         self.searchpath = searchpath
         self.create_loader = create_loader
 
     @property
     def searchpath(self):
-        return getattr(self, '_searchpath', [])
+        return getattr(self, '_searchpath')
 
     @searchpath.setter
     def searchpath(self, value):
@@ -48,13 +49,13 @@ class SearchPathImporter(object):
             if fullname == self.namespace:
                 return self
 
-        m = self.re_ns.match(fullname)
-        self.log.debug("match %s", str(m))
+        match = self.re_ns.match(fullname)
+        self.log.debug("match %s", str(match))
 
-        if not m:
+        if not match:
             return
 
-        name = m.group(1)
+        name = match.group(1)
         self.log.debug("hook.match %s", name)
         if self.find_file(name):
             return self
@@ -85,13 +86,13 @@ class SearchPathImporter(object):
             sys.modules[fullname] = mod
             return mod
 
-        m = self.re_ns.match(fullname)
-        self.log.debug("match %s", str(m))
+        match = self.re_ns.match(fullname)
+        self.log.debug("match %s", str(match))
 
-        if not m:
+        if not match:
             raise ImportError(fullname)
 
-        name = m.group(1)
+        name = match.group(1)
         filename = self.find_file(name)
         if not filename:
             raise ImportError(fullname)
