@@ -3,11 +3,16 @@
 
 ## [Unreleased]
 ### Added
+- py36 tests
+
 ### Fixed
 ### Changed
+- moved config plugins into separate config.ConfigPluginManager class
+
 ### Deprecated
 ### Removed
 ### Security
+
 
 ## [0.4.0]
 ### Added

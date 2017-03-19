@@ -27,7 +27,7 @@ def test_static_import():
         return
 
     # NOTE this will fail if pytest-xdist --boxed isn't used because py.test
-    # has already loaded static0 so # it's in the module cache
+    # has already loaded static0 so it's in the module cache
     with pytest.raises(ImportError):
         from pluginmgr_test.plugins import static0
 
@@ -35,6 +35,11 @@ def test_static_import():
 def test_load_fail():
     with pytest.raises(ImportError):
         pluginmgr_test.plugin._imphook.load_module('does.not.exist')
+
+
+def test_load_file_not_found():
+    with pytest.raises(ImportError):
+        pluginmgr_test.plugin._imphook.load_module('pluginmgr_test.plugins.nonexistant')
 
 
 def test_dyn_import():

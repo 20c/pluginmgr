@@ -6,9 +6,15 @@ branches:
     - gh-pages
 env:
   - TOX_ENV=py27
+  - TOX_ENV=py34
+  - TOX_ENV=py35
+  - TOX_ENV=py36
 before_install:
-  - pip install codecov
+  - sudo apt-get -qq update
 install:
+  - python -m pip install -U pip
+  - pip install -U setuptools
+  - pip install codecov
   - pip install tox
 script:
   - tox -e $TOX_ENV

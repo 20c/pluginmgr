@@ -35,43 +35,18 @@ anon_config = {
 searchpath = ''
 plugin = pluginmgr.PluginManager('pluginmgr.tests', searchpath)
 
-class PluginBase(pluginmgr.PluginBase):
+
+class EmitBase(object):
     pass
 
-class EmitBase(PluginBase):
+
+class ProbeBase(object):
     pass
 
-class ProbeBase(PluginBase):
-    pass
 
 @plugin.register('plugin0')
-class Plugin0(PluginBase):
+class Plugin0(object):
     pass
-
-@plugin.register('emit0')
-class EmitPlugin0(EmitBase):
-    def emit(self, msg):
-        pass
-
-@plugin.register('emit_abc')
-class EmitPluginABC(EmitBase):
-    # emit not defined to test TypeError
-    pass
-
-@plugin.register('probe0')
-class TimedPlugin0(ProbeBase):
-    pass
-
-@plugin.register('probe1')
-class ProbePlugin1(ProbeBase):
-    def probe(self):
-        return []
-
-def test_searchpath_init():
-    # doesn't use import hook if no search path
-    assert pluginmgr.PluginManager('pluginmgr.tests')
-    assert pluginmgr.PluginManager('pluginmgr.tests', 'string/search/path')
-    assert pluginmgr.PluginManager('pluginmgr.tests', ['list/search', '/path'])
 
 
 def test_plugin_registry():
@@ -81,34 +56,5 @@ def test_plugin_registry():
 
     with pytest.raises(ValueError):
         @plugin.register('plugin0')
-        class p0(PluginBase):
+        class p0(object):
             pass
-
-
-def test_plugin_instance():
-    with pytest.raises(ValueError):
-        plugin.new_plugin({})
-
-    with pytest.raises(ValueError):
-        plugin.get_instance('nonexistant')
-    with pytest.raises(ValueError):
-        plugin.get_instance(['unparsable'])
-
-    plugin.instantiate(config['plugin'])
-    for each in config['plugin']:
-        if 'name' not in each:
-            continue
-        obj = plugin.get_instance(each['name'])
-        for k,v in list(each.items()):
-            assert v == obj.config[k]
-
-    obj = plugin.get_instance(anon_config)
-    assert obj.config == anon_config
-
-    # copy ctor
-    obj = plugin.get_instance('fancy_copy')
-    assert 'reeb' == obj.config['str0']
-
-    obj = plugin.get_instance({'fancy_copy': {'var0': 'luggage'}})
-    assert 'reeb' == obj.config['str0']
-

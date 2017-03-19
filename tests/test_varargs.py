@@ -11,7 +11,9 @@ logging.basicConfig(level=logging.DEBUG)
 
 import pluginmgr
 import pluginmgr_test
+
 from pluginmgr_test import plugin
+
 
 config = {'fake': 'config'}
 typconf = config.copy()
