@@ -1,14 +1,14 @@
 
 from setuptools import setup, find_packages
 
-version = open('facsimile/VERSION').read().strip()
-requirements = open('facsimile/requirements.txt').read().split("\n")
-test_requirements = open('facsimile/requirements-test.txt').read().split("\n")
+VERSION = open('facsimile/VERSION').read().strip()
+REQUIREMENTS = open('facsimile/requirements.txt').read().split("\n")
+TEST_REQUIREMENTS = open('facsimile/requirements-test.txt').read().split("\n")
 
 
 setup(
     name='pluginmgr',
-    version=version,
+    version=VERSION,
     author='20C',
     author_email='code@20c.com',
     description='lightweight python plugin system supporting config inheritance',
@@ -23,16 +23,14 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    packages = find_packages(),
+    packages=find_packages(),
     include_package_data=True,
 
-
     url='https://github.com/20c/pluginmgr',
-    download_url='https://github.com/20c/pluginmgr/%s' % version,
+    download_url='https://github.com/20c/pluginmgr/%s' % VERSION,
 
-
-    install_requires=requirements,
-    test_requires=test_requirements,
+    install_requires=REQUIREMENTS,
+    test_requires=TEST_REQUIREMENTS,
 
     zip_safe=True
 )

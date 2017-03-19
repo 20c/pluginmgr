@@ -113,8 +113,6 @@ class SearchPathImporter(object):
 
 
 class PluginManager(object):
-    """
-    """
     def __init__(self, namespace, searchpath=None, create_loader=False):
         """
             namespace: import from (what you would type after `import`)
