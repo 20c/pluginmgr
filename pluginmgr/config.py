@@ -19,10 +19,21 @@ class PluginBase(object):
         self.init()
 
     def init(self):
+        """
+        called after the plugin is initialized, plugin may define this for any
+        other initialization code
+        """
         pass
 
 
 class ConfigPluginManager(pluginmgr.PluginManager):
+    """
+    Plugin manager class that also handles config objects
+    """
+    def __init__(self, *args, **kwargs):
+        super(ConfigPluginManager, self).__init__(*args, **kwargs)
+        self._instance = {}
+
     def _ctor(self, typ, config, *args, **kwargs):
         self.log.debug("ctor: self._instance=%s self._class=%s", str(self._instance), str(self._class))
         if typ in self._instance:

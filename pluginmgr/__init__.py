@@ -123,12 +123,10 @@ class PluginManager(object):
                           sharing the namespace with static modules
         """
         self._class = {}
-        self._instance = {}
         self._imphook = None
         self.log = logging.getLogger(__name__)
         self.namespace = namespace
         self.create_loader = create_loader
-
         self.searchpath = searchpath
 
     @property
