@@ -42,8 +42,18 @@ Create and register a plugin, note the filename needs to be the same as register
 from pluginmgr_test import plugin
 
 
+# register a plugin named mod0
 @plugin.register('mod0')
 class Mod0(pluginmgr.PluginBase):
     pass
+```
+
+See the dict containing all registered plugins
+
+```python
+from pluginmgr_test import plugin
+
+# dict of all registered plugins
+print(plugin.registry)
 ```
 

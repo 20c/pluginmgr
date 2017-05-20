@@ -159,7 +159,17 @@ class PluginManager(object):
             return cls
         return _func
 
+    @property
+    def registry(self):
+        """
+        class dictionary of name: class
+        """
+        return self._class.copy()
+
     def get_plugin_class(self, typ):
+        """
+        get class by name
+        """
         if typ in self._class:
             return self._class[typ]
 
