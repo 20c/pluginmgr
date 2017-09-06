@@ -12,10 +12,9 @@ class PluginBase(object):
     """
     Example base class for plugins, set config and call init()
     """
-    def __init__(self, config, *args, **kwargs):
-        self.config = config
-        self.args = args
-        self.kwargs = kwargs
+    def __init__(self, config):
+# XXX document - pluginmgr_config is required
+        self.pluginmgr_config = config
         self.init()
 
     def init(self):
@@ -39,7 +38,7 @@ class ConfigPluginManager(pluginmgr.PluginManager):
         if typ in self._instance:
             # get class type, copy config, override with passed config
             obj = self._instance[typ]
-            cp = obj.config.copy()
+            cp = obj.pluginmgr_config.copy()
             munge.util.recursive_update(cp, config)
             return type(obj)(cp, *args, **kwargs)
         # try to load
@@ -66,11 +65,10 @@ class ConfigPluginManager(pluginmgr.PluginManager):
 
         # store if named
         if 'name' in config:
-            obj.name = config['name']
-            self._instance[obj.name] = obj
+            self._instance[config['name']] = obj
         else:
             # this could dupe on .name, make name=''?
-            obj.name = typ
+            config['name'] = typ
 
         return obj
 
