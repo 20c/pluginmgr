@@ -3,19 +3,24 @@
 
 ## [Unreleased]
 ### Added
+### Fixed
+### Changed
+### Deprecated
+### Removed
+### Security
+
+
+## [0.5.0]
+### Added
 - py36 tests
 
-### Fixed
 ### Changed
 - moved config plugins into separate config.ConfigPluginManager class
 - renamed plugin config attr to pluginmgr_config
 
-### Deprecated
 ### Removed
 - name attr from ConfigPlugin objects
 - args and kwargs from config.PluginBase
-
-### Security
 
 
 ## [0.4.0]
