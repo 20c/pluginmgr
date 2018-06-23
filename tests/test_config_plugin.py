@@ -92,3 +92,7 @@ def test_plugin_instance():
 
     obj = plugin.get_instance({'fancy_copy': {'var0': 'luggage'}})
     assert 'reeb' == obj.pluginmgr_config['str0']
+    assert 12345 == obj.pluginmgr_config['var0']
+
+    obj = plugin.get_instance({'fancy_copy': {'name':'fancy_copy2', 'type':'fancy_copy', 'var0': 'luggage'}})
+    assert 'luggage' == obj.pluginmgr_config['var0']

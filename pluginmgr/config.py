@@ -87,6 +87,20 @@ class ConfigPluginManager(pluginmgr.PluginManager):
             return self.new_plugin({'type': node}, *args, **kwargs)
 
         if isinstance(node, collections.Mapping):
+            if "type" in node:
+                # node was a plugin config passed directly
+                name = node.get("name", node.get("type"))
+            elif len(node) == 1:
+                # node was a container with a single plugin config keyed
+                # to it
+                typ, config = list(node.items())[0]
+                name = config.get("name", config.get("type", typ))
+
+            # retrieve existing instance if it exists
+            if name in self._instance:
+                return self._instance[name]
+
+            # otherwise spawn new plugin
             return self.new_plugin(node, *args, **kwargs)
 
         raise ValueError("unable to parse plugin for output %s" % str(node))
