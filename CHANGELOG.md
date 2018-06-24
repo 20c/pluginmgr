@@ -4,6 +4,9 @@
 ## [Unreleased]
 ### Added
 ### Fixed
+
+- issue with get_instance not checking for existing plugins when passed a dict
+
 ### Changed
 ### Deprecated
 ### Removed
