@@ -10,7 +10,7 @@
 ### Security
 
 
-## [0.6.0]
+## [0.5.1]
 ### Fixed
 - issue with get_instance not checking for existing plugins when passed a dict
 
