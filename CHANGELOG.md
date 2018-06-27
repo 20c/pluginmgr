@@ -4,13 +4,15 @@
 ## [Unreleased]
 ### Added
 ### Fixed
-
-- issue with get_instance not checking for existing plugins when passed a dict
-
 ### Changed
 ### Deprecated
 ### Removed
 ### Security
+
+
+## [0.6.0]
+### Fixed
+- issue with get_instance not checking for existing plugins when passed a dict
 
 
 ## [0.5.0]
