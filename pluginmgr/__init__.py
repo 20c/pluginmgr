@@ -99,11 +99,16 @@ class SearchPathImporter(object):
         self.log.debug("hook.found(%s)", filename)
 
         # py3+
-        if hasattr(importlib, 'machinery'):
-            loader = importlib.machinery.SourceFileLoader(fullname, filename)
-            mod = loader.load_module()
-        else:
-            mod = imp.load_source(name, filename)
+        try:
+            if hasattr(importlib, 'machinery'):
+                loader = importlib.machinery.SourceFileLoader(fullname, filename)
+                mod = loader.load_module()
+            else:
+                mod = imp.load_source(name, filename)
+
+        except Exception as exc:
+            self.log.error("failed loading %s, %s(%s)", name, exc.__class__.__name__, str(exc))
+            raise
 
         # don't need to check mod, both throw instead of returning None
 
