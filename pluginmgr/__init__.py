@@ -8,6 +8,7 @@ import logging
 import os
 import re
 import sys
+import pkg_resources
 
 
 class SearchPathImporter(object):
@@ -133,6 +134,7 @@ class PluginManager(object):
         self.namespace = namespace
         self.create_loader = create_loader
         self.searchpath = searchpath
+        self.discover_external(namespace)
 
     @property
     def searchpath(self):
@@ -151,6 +153,13 @@ class PluginManager(object):
 
         self._imphook = SearchPathImporter(self.namespace, value, self.create_loader)
         sys.meta_path.append(self._imphook)
+
+    def discover_external(self, namespace):
+        for entry_point in pkg_resources.iter_entry_points(namespace):
+            module = entry_point.load()
+            imphook = SearchPathImporter(namespace, os.path.dirname(module.__file__), False)
+            sys.meta_path.append(imphook)
+
 
     def register(self, typ):
         """ register a plugin """
