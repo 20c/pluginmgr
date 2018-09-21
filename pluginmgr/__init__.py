@@ -134,7 +134,6 @@ class PluginManager(object):
         self.namespace = namespace
         self.create_loader = create_loader
         self.searchpath = searchpath
-        self.discover_external(namespace)
 
     @property
     def searchpath(self):
@@ -154,11 +153,13 @@ class PluginManager(object):
         self._imphook = SearchPathImporter(self.namespace, value, self.create_loader)
         sys.meta_path.append(self._imphook)
 
-    def discover_external(self, namespace):
+    def import_external(self, namespace):
         for entry_point in pkg_resources.iter_entry_points(namespace):
             module = entry_point.load()
-            imphook = SearchPathImporter(namespace, os.path.dirname(module.__file__), False)
-            sys.meta_path.append(imphook)
+            self.searchpath = (self.searchpath or []) + [os.path.dirname(module.__file__)]
+            # need to mark new searchpath as already imported
+            # to avoid re-import from new namespace
+            sys.modules["{}{}".format(namespace, entry_point.name)] = sys.modules[entry_point.module_name]
 
 
     def register(self, typ):
