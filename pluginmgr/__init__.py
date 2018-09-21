@@ -153,7 +153,9 @@ class PluginManager(object):
         self._imphook = SearchPathImporter(self.namespace, value, self.create_loader)
         sys.meta_path.append(self._imphook)
 
-    def import_external(self, namespace):
+    def import_external(self, namespace=None):
+        if not namespace:
+            namespace = self.namespace
         for entry_point in pkg_resources.iter_entry_points(namespace):
             module = entry_point.load()
             self.searchpath = (self.searchpath or []) + [os.path.dirname(module.__file__)]
