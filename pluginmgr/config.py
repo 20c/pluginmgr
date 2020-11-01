@@ -1,14 +1,10 @@
-from builtins import str
-from past.builtins import basestring
-from builtins import object
-
 import collections
 import munge.util
 
 import pluginmgr
 
 
-class PluginBase(object):
+class PluginBase:
     """
     Example base class for plugins, set config and call init()
     """
@@ -30,11 +26,11 @@ class ConfigPluginManager(pluginmgr.PluginManager):
     Plugin manager class that also handles config objects
     """
     def __init__(self, *args, **kwargs):
-        super(ConfigPluginManager, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._instance = {}
 
     def _ctor(self, typ, config, *args, **kwargs):
-        self.log.debug("ctor: self._instance=%s self._class=%s", str(self._instance), str(self._class))
+        self.log.debug(f"ctor: self._instance={self._instance} self._class={self._class}")
         if typ in self._instance:
             # get class type, copy config, override with passed config
             obj = self._instance[typ]
@@ -80,7 +76,7 @@ class ConfigPluginManager(pluginmgr.PluginManager):
                FIXME - why would instantiate() even process them
         """
         # string is a ref to an existing plugin instance
-        if isinstance(node, basestring):
+        if isinstance(node, str):
             if node in self._instance:
                 return self._instance[node]
             # if not an instance, try for init with empty config
@@ -103,7 +99,7 @@ class ConfigPluginManager(pluginmgr.PluginManager):
             # otherwise spawn new plugin
             return self.new_plugin(node, *args, **kwargs)
 
-        raise ValueError("unable to parse plugin for output %s" % str(node))
+        raise ValueError(f"unable to parse plugin for output {node}")
 
     def instantiate(self, config, *args, **kwargs):
         """

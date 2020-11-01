@@ -12,7 +12,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6.1"
+python = ">=3.6.1, <4"
 munge = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
