@@ -10,6 +10,15 @@
 ### Security
 
 
+## [1.0.0]
+
+### Added
+- poetry
+- python to 3.9
+### Removed
+- python 2.7 - 3.5 support
+
+
 ## [0.6.0]
 ### Added
 - support entry points for plugins from external packages
