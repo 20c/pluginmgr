@@ -212,14 +212,6 @@ version = "3.0.12"
 
 [[package]]
 category = "main"
-description = "Clean single-source support for Python 3 and 2"
-name = "future"
-optional = false
-python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
-version = "0.18.2"
-
-[[package]]
-category = "main"
 description = "Internationalized Domain Names in Applications (IDNA)"
 name = "idna"
 optional = false
@@ -306,12 +298,11 @@ description = "data manipulation client / library"
 name = "munge"
 optional = false
 python-versions = "*"
-version = "1.0.0"
+version = "1.1.0"
 
 [package.dependencies]
 PyYAML = ">=3.10"
 click = ">=5.1"
-future = ">=0.15.2,<1"
 requests = ">=2.6.0,<3"
 
 [[package]]
@@ -908,9 +899,6 @@ filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},
     {file = "filelock-3.0.12.tar.gz", hash = "sha256:18d82244ee114f543149c66a6e0c14e9c4f8a1044b5cdaadd0f82159d6a6ff59"},
 ]
-future = [
-    {file = "future-0.18.2.tar.gz", hash = "sha256:b1bead90b70cf6ec3f0710ae53a525360fa360d306a86583adc6bf83a4db537d"},
-]
 idna = [
     {file = "idna-2.10-py2.py3-none-any.whl", hash = "sha256:b97d804b1e9b523befed77c48dacec60e6dcb0b5391d57af6a65a312a90648c0"},
     {file = "idna-2.10.tar.gz", hash = "sha256:b307872f855b18632ce0c21c5e45be78c0ea7ae4c15c828c20788b26921eb3f6"},
@@ -936,7 +924,7 @@ keyring = [
     {file = "keyring-21.4.0.tar.gz", hash = "sha256:9aeadd006a852b78f4b4ef7c7556c2774d2432bbef8ee538a3e9089ac8b11466"},
 ]
 munge = [
-    {file = "munge-1.0.0.tar.gz", hash = "sha256:e531dd74f9fa7279d39914dd7576e49c781dd89a1eadfba67ea450e72b308361"},
+    {file = "munge-1.1.0.tar.gz", hash = "sha256:a5ec65d880a7e7fdfb3c8a4ff05e0826250f94d866c88be6191a80da6344020d"},
 ]
 mypy-extensions = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
