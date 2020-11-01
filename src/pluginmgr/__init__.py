@@ -1,17 +1,14 @@
-from builtins import str
-from past.builtins import basestring
-from builtins import object
-
 import imp
 import importlib
 import logging
 import os
 import re
 import sys
+
 import pkg_resources
 
 
-class SearchPathImporter(object):
+class SearchPathImporter:
     """
     import hook to dynamically load modules from a search path
 
@@ -22,7 +19,7 @@ class SearchPathImporter(object):
         self.namespace = namespace
         self.log = logging.getLogger(__name__)
         self.re_ns = re.compile(r"^%s\.(.*)$" % re.escape(self.namespace))
-        self.log.debug("hook.compile(%s)", self.namespace)
+        self.log.debug(f"hook.compile({self.namespace})")
         self.searchpath = searchpath
         self.create_loader = create_loader
 
@@ -34,15 +31,15 @@ class SearchPathImporter(object):
     def searchpath(self, value):
         if not value:
             self._searchpath = []
-        elif isinstance(value, basestring):
+        elif isinstance(value, str):
             self._searchpath = [value]
         else:
             self._searchpath = [x for x in value if x]
 
     # import hooks
     def find_module(self, fullname, path=None):
-        self.log.debug("hook.namespace %s", self.namespace)
-        self.log.debug("hook.find(%s, %s) loader=%d", fullname, path, int(self.create_loader))
+        self.log.debug(f"hook.namespace {self.namespace}")
+        self.log.debug(f"hook.find({fullname}, {path}) loader={self.create_loader}")
         if self.create_loader:
             # trying to import package level creates an infinite loop
             if fullname == self.package:
@@ -51,30 +48,30 @@ class SearchPathImporter(object):
                 return self
 
         match = self.re_ns.match(fullname)
-        self.log.debug("match %s", str(match))
+        self.log.debug(f"match {match}")
 
         if not match:
             return
 
         name = match.group(1)
-        self.log.debug("hook.match %s", name)
+        self.log.debug(f"hook match {name}")
         if self.find_file(name):
             return self
 
     def find_file(self, name):
         for each in self.searchpath:
             fq_path = os.path.join(each, name + '.py')
-            self.log.debug("checking %s", fq_path)
+            self.log.debug(f"checking {fq_path}")
             if os.path.isfile(fq_path):
                 return fq_path
 
     def load_module(self, fullname):
-        self.log.debug("hook.load(%s)", fullname)
+        self.log.debug(f"hook.load({fullname})")
 
         # build package for loader if it doesn't exist
         # don't need to check for create_loader here, checks in find_module
         if fullname == self.package or fullname == self.namespace:
-            self.log.debug("hook.create_loader(%s)", fullname)
+            self.log.debug(f"hook.create_loader({fullname})")
             # make a new loader module
             mod = imp.new_module(fullname)
 
@@ -88,7 +85,7 @@ class SearchPathImporter(object):
             return mod
 
         match = self.re_ns.match(fullname)
-        self.log.debug("match %s", str(match))
+        self.log.debug(f"match {match}")
 
         if not match:
             raise ImportError(fullname)
@@ -97,15 +94,11 @@ class SearchPathImporter(object):
         filename = self.find_file(name)
         if not filename:
             raise ImportError(fullname)
-        self.log.debug("hook.found(%s)", filename)
+        self.log.debug(f"hook.found({filename})")
 
-        # py3+
         try:
-            if hasattr(importlib, 'machinery'):
-                loader = importlib.machinery.SourceFileLoader(fullname, filename)
-                mod = loader.load_module()
-            else:
-                mod = imp.load_source(name, filename)
+            loader = importlib.machinery.SourceFileLoader(fullname, filename)
+            mod = loader.load_module()
 
         except Exception as exc:
             self.log.error("failed loading %s, %s(%s)", name, exc.__class__.__name__, str(exc))
@@ -113,12 +106,12 @@ class SearchPathImporter(object):
 
         # don't need to check mod, both throw instead of returning None
 
-        self.log.debug("hook.loaded(%s) - %s", fullname, str(mod))
+        self.log.debug(f"hook.loaded({fullname}) - {mod}")
         sys.modules[fullname] = mod
         return mod
 
 
-class PluginManager(object):
+class PluginManager:
     def __init__(self, namespace, searchpath=None, create_loader=False):
         """
             namespace: import from (what you would type after `import`)
@@ -161,7 +154,7 @@ class PluginManager(object):
             self.searchpath = (self.searchpath or []) + [os.path.dirname(module.__file__)]
             # need to mark new searchpath as already imported
             # to avoid re-import from new namespace
-            sys.modules["{}{}".format(namespace, entry_point.name)] = sys.modules[entry_point.module_name]
+            sys.modules[f"{namespace}{entry_point.name}"] = sys.modules[entry_point.module_name]
 
 
     def register(self, typ):
@@ -192,11 +185,11 @@ class PluginManager(object):
 
         # try to import by same name
         try:
-            importlib.import_module("%s.%s" % (self.namespace, typ))
+            importlib.import_module(f"{self.namespace}.{typ}")
             if typ in self._class:
                 return self._class[typ]
 
-        except ImportError as e:
-            self.log.debug("ImportError " + str(e))
+        except ImportError as exc:
+            self.log.debug(f"ImportError {exc}")
 
-        raise ValueError("unknown plugin '%s'" % typ)
+        raise ValueError(f"unknown plugin '{typ}'")

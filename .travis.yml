@@ -1,10 +1,10 @@
 
 language: python
 python:
-  - "2.7"
-  - "3.4"
-  - "3.5"
   - "3.6"
+  - "3.7"
+  - "3.8"
+  - "3.9"
 branches:
   except:
     - gh-pages
@@ -12,8 +12,8 @@ before_install:
   - sudo apt-get -qq update
 install:
   - python -m pip install -U pip
-  - pip install -U setuptools
-  - pip install tox-travis codecov
+  - pip install -U setuptools poetry
+  - pip install -U tox-travis codecov
 script:
   - tox
 after_success:
