@@ -95,13 +95,9 @@ class SearchPathImporter:
             raise ImportError(fullname)
         self.log.debug(f"hook.found({filename})")
 
-        # py3+
         try:
-            if hasattr(importlib, 'machinery'):
-                loader = importlib.machinery.SourceFileLoader(fullname, filename)
-                mod = loader.load_module()
-            else:
-                mod = imp.load_source(name, filename)
+            loader = importlib.machinery.SourceFileLoader(fullname, filename)
+            mod = loader.load_module()
 
         except Exception as exc:
             self.log.error("failed loading %s, %s(%s)", name, exc.__class__.__name__, str(exc))
