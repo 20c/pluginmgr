@@ -1,17 +1,17 @@
-
+import importlib
 import logging
 import os
-import pytest
 import sys
-import importlib
 
+import pytest
 
 # log here to see import logs
 logging.basicConfig(level=logging.DEBUG)
 
 
-import pluginmgr
 import pluginmgr_test
+
+import pluginmgr
 
 
 @pytest.yield_fixture(autouse=True)
@@ -34,12 +34,12 @@ def test_static_import():
 
 def test_load_fail():
     with pytest.raises(ImportError):
-        pluginmgr_test.plugin._imphook.load_module('does.not.exist')
+        pluginmgr_test.plugin._imphook.load_module("does.not.exist")
 
 
 def test_load_file_not_found():
     with pytest.raises(ImportError):
-        pluginmgr_test.plugin._imphook.load_module('pluginmgr_test.plugins.nonexistant')
+        pluginmgr_test.plugin._imphook.load_module("pluginmgr_test.plugins.nonexistant")
 
 
 def test_dyn_import():
@@ -47,8 +47,11 @@ def test_dyn_import():
 
 
 def test_standalone_import():
-    hook = pluginmgr.SearchPathImporter("standalone", os.path.join(os.path.dirname(__file__), "data", "standalone"), True)
+    hook = pluginmgr.SearchPathImporter(
+        "standalone",
+        os.path.join(os.path.dirname(__file__), "data", "standalone"),
+        True,
+    )
     sys.meta_path.append(hook)
     mod = importlib.import_module("standalone.mod0.submodule")
     assert mod.test == 1
-

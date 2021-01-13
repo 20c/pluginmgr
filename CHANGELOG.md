@@ -10,6 +10,11 @@
 ### Security
 
 
+## [1.0.1]
+### Fixed
+- only request py3.6+
+
+
 ## [1.0.0]
 
 ### Added

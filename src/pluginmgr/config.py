@@ -9,8 +9,9 @@ class PluginBase:
     """
     Example base class for plugins, set config and call init()
     """
+
     def __init__(self, config):
-# XXX document - pluginmgr_config is required
+        # XXX document - pluginmgr_config is required
         self.pluginmgr_config = config
         self.init()
 
@@ -26,12 +27,15 @@ class ConfigPluginManager(pluginmgr.PluginManager):
     """
     Plugin manager class that also handles config objects
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._instance = {}
 
     def _ctor(self, typ, config, *args, **kwargs):
-        self.log.debug(f"ctor: self._instance={self._instance} self._class={self._class}")
+        self.log.debug(
+            f"ctor: self._instance={self._instance} self._class={self._class}"
+        )
         if typ in self._instance:
             # get class type, copy config, override with passed config
             obj = self._instance[typ]
@@ -50,8 +54,8 @@ class ConfigPluginManager(pluginmgr.PluginManager):
         obj = None
 
         # if type is defined, create a new instance
-        if 'type' in config:
-            typ = config['type']
+        if "type" in config:
+            typ = config["type"]
 
         # single key is overriding an existing plugin instance
         elif isinstance(config, collections.Mapping) and len(config) == 1:
@@ -61,11 +65,11 @@ class ConfigPluginManager(pluginmgr.PluginManager):
         obj = self._ctor(typ, config, *args, **kwargs)
 
         # store if named
-        if 'name' in config:
-            self._instance[config['name']] = obj
+        if "name" in config:
+            self._instance[config["name"]] = obj
         else:
             # this could dupe on .name, make name=''?
-            config['name'] = typ
+            config["name"] = typ
 
         return obj
 
@@ -81,7 +85,7 @@ class ConfigPluginManager(pluginmgr.PluginManager):
             if node in self._instance:
                 return self._instance[node]
             # if not an instance, try for init with empty config
-            return self.new_plugin({'type': node}, *args, **kwargs)
+            return self.new_plugin({"type": node}, *args, **kwargs)
 
         if isinstance(node, collections.Mapping):
             if "type" in node:

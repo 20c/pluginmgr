@@ -1,6 +1,6 @@
+from pluginmgr_test import plugin
 
 import pluginmgr.config
-from pluginmgr_test import plugin
 
 
 class PluginBase(pluginmgr.config.PluginBase):
@@ -10,6 +10,6 @@ class PluginBase(pluginmgr.config.PluginBase):
         self.kwargs = kwargs
 
 
-@plugin.register('static0')
+@plugin.register("static0")
 class Static0(PluginBase):
     pass
