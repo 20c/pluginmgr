@@ -26,6 +26,7 @@ black = "^20.8b1"
 pyupgrade = {version = "^2.7.3", python = "^3.6.1"}
 twine = "^3.2.0"
 isort = "^5.6.4"
+flake8 = "^3.8.4"
 
 [tool.pytest.ini_options]
 norecursedirs = ["data", "gen", ".tox"]
