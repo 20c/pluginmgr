@@ -13,9 +13,10 @@ class SearchPathImporter:
     import hook to dynamically load modules from a search path
 
     """
+
     def __init__(self, namespace, searchpath, create_loader):
         self._searchpath = []
-        self.package = namespace.split('.')[0]
+        self.package = namespace.split(".")[0]
         self.namespace = namespace
         self.log = logging.getLogger(__name__)
         self.re_ns = re.compile(r"^%s\.(.*)$" % re.escape(self.namespace))
@@ -25,7 +26,7 @@ class SearchPathImporter:
 
     @property
     def searchpath(self):
-        return getattr(self, '_searchpath')
+        return getattr(self, "_searchpath")
 
     @searchpath.setter
     def searchpath(self, value):
@@ -60,7 +61,7 @@ class SearchPathImporter:
 
     def find_file(self, name):
         for each in self.searchpath:
-            fq_path = os.path.join(each, name + '.py')
+            fq_path = os.path.join(each, name + ".py")
             self.log.debug(f"checking {fq_path}")
             if os.path.isfile(fq_path):
                 return fq_path
@@ -80,7 +81,7 @@ class SearchPathImporter:
             mod.__name__ = fullname
             mod.__path__ = self.searchpath
             mod.__loader__ = self
-            mod.__package__ = '.'.join(fullname.split('.')[:-1])
+            mod.__package__ = ".".join(fullname.split(".")[:-1])
             sys.modules[fullname] = mod
             return mod
 
@@ -101,7 +102,9 @@ class SearchPathImporter:
             mod = loader.load_module()
 
         except Exception as exc:
-            self.log.error("failed loading %s, %s(%s)", name, exc.__class__.__name__, str(exc))
+            self.log.error(
+                "failed loading %s, %s(%s)", name, exc.__class__.__name__, str(exc)
+            )
             raise
 
         # don't need to check mod, both throw instead of returning None
@@ -114,12 +117,12 @@ class SearchPathImporter:
 class PluginManager:
     def __init__(self, namespace, searchpath=None, create_loader=False):
         """
-            namespace: import from (what you would type after `import`)
-            searchpath: a directory or list of directories to search in
-            create_loader: determines if this should create a blank loader to
-                          import through. This should be enabled if there isn't
-                          a real module path for the namespace and disabled for
-                          sharing the namespace with static modules
+        namespace: import from (what you would type after `import`)
+        searchpath: a directory or list of directories to search in
+        create_loader: determines if this should create a blank loader to
+                      import through. This should be enabled if there isn't
+                      a real module path for the namespace and disabled for
+                      sharing the namespace with static modules
         """
         self._class = {}
         self._imphook = None
@@ -151,11 +154,14 @@ class PluginManager:
             namespace = self.namespace
         for entry_point in pkg_resources.iter_entry_points(namespace):
             module = entry_point.load()
-            self.searchpath = (self.searchpath or []) + [os.path.dirname(module.__file__)]
+            self.searchpath = (self.searchpath or []) + [
+                os.path.dirname(module.__file__)
+            ]
             # need to mark new searchpath as already imported
             # to avoid re-import from new namespace
-            sys.modules[f"{namespace}{entry_point.name}"] = sys.modules[entry_point.module_name]
-
+            sys.modules[f"{namespace}{entry_point.name}"] = sys.modules[
+                entry_point.module_name
+            ]
 
     def register(self, typ):
         """ register a plugin """
@@ -167,6 +173,7 @@ class PluginManager:
             cls.plugin_type = typ
             self._class[typ] = cls
             return cls
+
         return _func
 
     @property

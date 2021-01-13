@@ -1,67 +1,71 @@
-
 import pytest
 
 from pluginmgr.config import ConfigPluginManager, PluginBase
 
-
 config = {
-    'plugin': [
+    "plugin": [
         {
-        'name': 'fancy_probe',
-        'type': 'probe0',
-        'var0': 24,
-        'str0': 'reeb',
-        'interval': '5s',
+            "name": "fancy_probe",
+            "type": "probe0",
+            "var0": 24,
+            "str0": "reeb",
+            "interval": "5s",
         },
         {
-        'name': 'emit0',
-        'type': 'emit0',
-        'var0': 42,
-        'str0': 'beer',
+            "name": "emit0",
+            "type": "emit0",
+            "var0": 42,
+            "str0": "beer",
         },
         {
-        'name': 'fancy_copy',
-        'type': 'fancy_probe',
-        'var0': 12345,
+            "name": "fancy_copy",
+            "type": "fancy_probe",
+            "var0": 12345,
         },
     ],
 }
 
 
 anon_config = {
-    'type': 'plugin0',
-    'var0': 999,
+    "type": "plugin0",
+    "var0": 999,
 }
 
 
-plugin = ConfigPluginManager('pluginmgr.tests')
+plugin = ConfigPluginManager("pluginmgr.tests")
 
 
 class EmitBase(PluginBase):
     pass
 
+
 class ProbeBase(PluginBase):
     pass
 
-@plugin.register('plugin0')
+
+@plugin.register("plugin0")
 class Plugin0(PluginBase):
     pass
 
-@plugin.register('emit0')
+
+@plugin.register("emit0")
 class EmitPlugin0(EmitBase):
     def emit(self, msg):
         pass
 
-@plugin.register('emit_abc')
+
+@plugin.register("emit_abc")
 class EmitPluginABC(EmitBase):
     # emit not defined to test TypeError
     pass
 
-@plugin.register('probe0')
+
+@plugin.register("probe0")
 class TimedPlugin0(ProbeBase):
     pass
 
-@plugin.register('probe1')
+
+@plugin.register("probe1")
 class ProbePlugin1(ProbeBase):
     def probe(self):
         return []
@@ -71,28 +75,30 @@ def test_plugin_instance():
     with pytest.raises(ValueError):
         plugin.new_plugin({})
     with pytest.raises(ValueError):
-        plugin.get_instance('nonexistant')
+        plugin.get_instance("nonexistant")
     with pytest.raises(ValueError):
-        plugin.get_instance(['unparsable'])
+        plugin.get_instance(["unparsable"])
 
-    plugin.instantiate(config['plugin'])
-    for each in config['plugin']:
-        if 'name' not in each:
+    plugin.instantiate(config["plugin"])
+    for each in config["plugin"]:
+        if "name" not in each:
             continue
-        obj = plugin.get_instance(each['name'])
-        for k,v in list(each.items()):
+        obj = plugin.get_instance(each["name"])
+        for k, v in list(each.items()):
             assert v == obj.pluginmgr_config[k]
 
     obj = plugin.get_instance(anon_config)
     assert obj.pluginmgr_config == anon_config
 
     # copy ctor
-    obj = plugin.get_instance('fancy_copy')
-    assert 'reeb' == obj.pluginmgr_config['str0']
+    obj = plugin.get_instance("fancy_copy")
+    assert "reeb" == obj.pluginmgr_config["str0"]
 
-    obj = plugin.get_instance({'fancy_copy': {'var0': 'luggage'}})
-    assert 'reeb' == obj.pluginmgr_config['str0']
-    assert 12345 == obj.pluginmgr_config['var0']
+    obj = plugin.get_instance({"fancy_copy": {"var0": "luggage"}})
+    assert "reeb" == obj.pluginmgr_config["str0"]
+    assert 12345 == obj.pluginmgr_config["var0"]
 
-    obj = plugin.get_instance({'fancy_copy': {'name':'fancy_copy2', 'type':'fancy_copy', 'var0': 'luggage'}})
-    assert 'luggage' == obj.pluginmgr_config['var0']
+    obj = plugin.get_instance(
+        {"fancy_copy": {"name": "fancy_copy2", "type": "fancy_copy", "var0": "luggage"}}
+    )
+    assert "luggage" == obj.pluginmgr_config["var0"]
