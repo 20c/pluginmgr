@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pluginmgr"
-version = "1.0.0"
+version = "1.0.1"
 description = "lightweight python plugin system supporting config inheritance"
 authors = ["20C <code@20c.com>"]
 readme = "README.md"

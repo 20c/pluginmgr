@@ -12,11 +12,10 @@
 
 ## [1.0.1]
 ### Fixed
-- only request py3.6+
+- only require py3.6+
 
 
 ## [1.0.0]
-
 ### Added
 - poetry
 - python to 3.9
