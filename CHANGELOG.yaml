@@ -1,0 +1,47 @@
+Unreleased:
+  added:
+  - python 3.10
+  fixed: []
+  changed: []
+  deprecated: []
+  removed:
+  - python 3.6
+  security: []
+1.0.1:
+  fixed:
+  - only require py3.6+
+1.0.0:
+  added:
+  - poetry
+  - python to 3.9
+  removed:
+  - python 2.7 - 3.5 support
+0.6.0:
+  added:
+  - support entry points for plugins from external packages
+0.5.1:
+  fixed:
+  - issue with get_instance not checking for existing plugins when passed a dict
+0.5.0:
+  added:
+  - py36 tests
+  changed:
+  - moved config plugins into separate config.ConfigPluginManager class
+  - renamed plugin config attr to pluginmgr_config
+  removed:
+  - name attr from ConfigPlugin objects
+  - args and kwargs from config.PluginBase
+0.4.0:
+  added:
+  - py3 support
+  fixed:
+  - always use full module name in sys.modules
+  changed:
+  - check searchpath for null values
+0.3.0:
+  added:
+  - allow changing searchpath after instantiation
+  fixed: []
+0.2.0:
+  added:
+  - variadic arguments to plugin ctors
