@@ -5,7 +5,7 @@ import pluginmgr.config
 
 class PluginBase(pluginmgr.config.PluginBase):
     def __init__(self, config, *args, **kwargs):
-        super(PluginBase, self).__init__(config)
+        super().__init__(config)
         self.args = args
         self.kwargs = kwargs
 

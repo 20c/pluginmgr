@@ -164,7 +164,7 @@ class PluginManager:
             ]
 
     def register(self, typ):
-        """ register a plugin """
+        """register a plugin"""
         # should be able to combine class/instance namespace, and inherit from either
         # would need to store meta or rely on copy ctor
         def _func(cls):

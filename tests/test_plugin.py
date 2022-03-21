@@ -35,16 +35,16 @@ searchpath = ""
 plugin = pluginmgr.PluginManager("pluginmgr.tests", searchpath)
 
 
-class EmitBase(object):
+class EmitBase:
     pass
 
 
-class ProbeBase(object):
+class ProbeBase:
     pass
 
 
 @plugin.register("plugin0")
-class Plugin0(object):
+class Plugin0:
     pass
 
 
@@ -56,5 +56,5 @@ def test_plugin_registry():
     with pytest.raises(ValueError):
 
         @plugin.register("plugin0")
-        class p0(object):
+        class p0:
             pass
