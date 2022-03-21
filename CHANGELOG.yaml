@@ -1,12 +1,15 @@
 Unreleased:
-  added:
-  - python 3.10
+  added: []
   fixed: []
   changed: []
   deprecated: []
+  removed: []
+  security: []
+1.1.0:
+  added:
+  - python 3.10
   removed:
   - python 3.6
-  security: []
 1.0.1:
   fixed:
   - only require py3.6+
