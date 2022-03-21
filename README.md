@@ -6,6 +6,8 @@
 [![PyPI](https://img.shields.io/pypi/pyversions/pluginmgr.svg?maxAge=3600)](https://pypi.python.org/pypi/pluginmgr)
 [![Tests](https://github.com/20c/pluginmgr/workflows/tests/badge.svg)](https://github.com/20c/pluginmgr)
 [![Codecov](https://img.shields.io/codecov/c/github/20c/pluginmgr/master.svg?maxAge=3600)](https://codecov.io/github/20c/pluginmgr)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/20c/pluginmgr.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/20c/pluginmgr/context:python)
+
 
 
 lightweight python plugin system supporting config inheritance

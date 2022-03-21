@@ -1,4 +1,4 @@
-import collections
+import collections.abc
 
 import munge.util
 
@@ -58,7 +58,7 @@ class ConfigPluginManager(pluginmgr.PluginManager):
             typ = config["type"]
 
         # single key is overriding an existing plugin instance
-        elif isinstance(config, collections.Mapping) and len(config) == 1:
+        elif isinstance(config, collections.abc.Mapping) and len(config) == 1:
             # get type name and shift out config to parent level
             (typ, config) = list(config.items())[0]
 
@@ -87,7 +87,7 @@ class ConfigPluginManager(pluginmgr.PluginManager):
             # if not an instance, try for init with empty config
             return self.new_plugin({"type": node}, *args, **kwargs)
 
-        if isinstance(node, collections.Mapping):
+        if isinstance(node, collections.abc.Mapping):
             if "type" in node:
                 # node was a plugin config passed directly
                 name = node.get("name", node.get("type"))
