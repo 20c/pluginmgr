@@ -3,10 +3,12 @@
 
 ## [Unreleased]
 ### Added
+- python 3.10
 ### Fixed
 ### Changed
 ### Deprecated
 ### Removed
+- python 3.6
 ### Security
 
 
