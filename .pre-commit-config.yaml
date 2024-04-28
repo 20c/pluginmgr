@@ -15,9 +15,10 @@ repos:
     rev: v0.1.14
     hooks:
       # Run the linter.
-      # removes imports for tests
-#      - id: ruff
-#        args: [--fix]
+      - id: ruff
+        # removes imports for tests
+        exclude: tests/
+        args: [--fix]
       # Run the formatter.
       - id: ruff-format
   - repo: local
