@@ -19,8 +19,9 @@ classifiers = [
 
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 munge = ">=1"
+importlib-metadata = ">=1"
 
 
 [tool.poetry.dev-dependencies]
