@@ -8,7 +8,7 @@ import re
 import sys
 
 
-class SearchPathImporter:
+class SearchPathImporter(importlib.abc.MetaPathFinder, importlib.abc.Loader):
     """
     import hook to dynamically load modules from a search path
 
@@ -23,6 +23,9 @@ class SearchPathImporter:
         self.log.debug(f"hook.compile({self.namespace})")
         self.searchpath = searchpath
         self.create_loader = create_loader
+
+    def install(self):
+        sys.meta_path.append(self)
 
     @property
     def searchpath(self):
@@ -59,6 +62,18 @@ class SearchPathImporter:
         if self.find_file(name):
             return self
 
+    def find_spec(self, fullname, path=None, target=None):
+        self.log.debug(f"hook.find_spec({self}, {fullname}, {path}, {target})")
+        if self.create_loader:
+            if fullname == self.package or fullname == self.namespace:
+                return importlib.machinery.ModuleSpec(fullname, self)
+
+        match = self.re_ns.match(fullname)
+        if match:
+            if fq_path := self.find_file(match.group(1)):
+                return importlib.machinery.ModuleSpec(fullname, self, origin=fq_path)
+        return None
+
     def find_file(self, name):
         for each in self.searchpath:
             fq_path = os.path.join(each, name + ".py")
@@ -68,6 +83,13 @@ class SearchPathImporter:
 
     def load_module(self, fullname):
         self.log.debug(f"hook.load({fullname})")
+        # For backward compatibility, delegate to exec_module.
+        module = types.ModuleType(fullname)
+        return self.exec_module(module)
+
+    def exec_module(self, module):
+        fullname = module.__name__
+        self.log.debug(f"hook.load({module}) {fullname}")
 
         # build package for loader if it doesn't exist
         # don't need to check for create_loader here, checks in find_module
@@ -150,7 +172,7 @@ class PluginManager:
             return
 
         self._imphook = SearchPathImporter(self.namespace, value, self.create_loader)
-        sys.meta_path.append(self._imphook)
+        self._imphook.install()
 
     def import_external(self, namespace=None):
         if not namespace:

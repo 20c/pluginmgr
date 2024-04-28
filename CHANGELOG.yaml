@@ -4,6 +4,7 @@ Unreleased:
   fixed: []
   changed:
   - use importlib instead of imp
+  - update Importer to use 3.12 machinery
   deprecated: []
   removed:
   - python 3.7
