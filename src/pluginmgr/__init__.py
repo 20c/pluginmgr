@@ -1,5 +1,5 @@
-import imp
 import importlib
+import importlib.util
 import logging
 import os
 import re
@@ -74,7 +74,8 @@ class SearchPathImporter:
         if fullname == self.package or fullname == self.namespace:
             self.log.debug(f"hook.create_loader({fullname})")
             # make a new loader module
-            mod = imp.new_module(fullname)
+            spec = importlib.util.spec_from_loader(fullname, loader=None)
+            mod = importlib.util.module_from_spec(spec)
 
             # set a few properties required by PEP 302
             mod.__file__ = self.namespace
@@ -165,6 +166,7 @@ class PluginManager:
 
     def register(self, typ):
         """register a plugin"""
+
         # should be able to combine class/instance namespace, and inherit from either
         # would need to store meta or rely on copy ctor
         def _func(cls):
