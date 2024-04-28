@@ -31,6 +31,7 @@ pytest = "^6.0.1"
 pytest-cov = "*"
 pytest-xdist = "^2.1.0"
 tox = "^3"
+docutils = "<=0.21"
 
 # linting
 black = { version = ">=20", allow-prereleases = true }
