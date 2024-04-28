@@ -1,11 +1,11 @@
 import importlib
 import importlib.util
+import types
+import importlib_metadata
 import logging
 import os
 import re
 import sys
-
-import pkg_resources
 
 
 class SearchPathImporter:
@@ -74,12 +74,14 @@ class SearchPathImporter:
         if fullname == self.package or fullname == self.namespace:
             self.log.debug(f"hook.create_loader({fullname})")
             # make a new loader module
-            spec = importlib.util.spec_from_loader(fullname, loader=None)
-            mod = importlib.util.module_from_spec(spec)
+            # spec = importlib.util.spec_from_loader(fullname, loader=self)
+            # mod = importlib.util.module_from_spec(spec)
+            mod = types.ModuleType(fullname)
 
             # set a few properties required by PEP 302
             mod.__file__ = self.namespace
             mod.__name__ = fullname
+            # this is the only one needed for py3.11
             mod.__path__ = self.searchpath
             mod.__loader__ = self
             mod.__package__ = ".".join(fullname.split(".")[:-1])
@@ -153,7 +155,7 @@ class PluginManager:
     def import_external(self, namespace=None):
         if not namespace:
             namespace = self.namespace
-        for entry_point in pkg_resources.iter_entry_points(namespace):
+        for entry_point in importlib_metadata.entry_points()[namespace]:
             module = entry_point.load()
             self.searchpath = (self.searchpath or []) + [
                 os.path.dirname(module.__file__)
