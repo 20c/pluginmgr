@@ -1,9 +1,12 @@
 Unreleased:
-  added: []
+  added:
+  - python 3.11, 3.12
   fixed: []
-  changed: []
+  changed:
+  - use importlib instead of imp
   deprecated: []
-  removed: []
+  removed:
+  - python 3.7
   security: []
 1.1.0:
   added:
