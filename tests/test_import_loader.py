@@ -14,7 +14,7 @@ import pluginmgr_test
 import pluginmgr
 
 
-@pytest.yield_fixture(autouse=True)
+@pytest.fixture(autouse=True)
 def set_loader():
     pluginmgr_test.set_create_loader(True)
     yield
