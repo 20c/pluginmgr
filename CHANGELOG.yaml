@@ -5,6 +5,14 @@ Unreleased:
   deprecated: []
   removed: []
   security: []
+1.2.0:
+  added:
+  - python 3.11, 3.12
+  changed:
+  - use importlib instead of imp
+  - update Importer to use 3.12 machinery
+  removed:
+  - python 3.7
 1.1.0:
   added:
   - python 3.10

@@ -1,14 +1,14 @@
-import imp
 import importlib
+import importlib.util
+import types
+import importlib_metadata
 import logging
 import os
 import re
 import sys
 
-import pkg_resources
 
-
-class SearchPathImporter:
+class SearchPathImporter(importlib.abc.MetaPathFinder, importlib.abc.Loader):
     """
     import hook to dynamically load modules from a search path
 
@@ -23,6 +23,9 @@ class SearchPathImporter:
         self.log.debug(f"hook.compile({self.namespace})")
         self.searchpath = searchpath
         self.create_loader = create_loader
+
+    def install(self):
+        sys.meta_path.append(self)
 
     @property
     def searchpath(self):
@@ -59,6 +62,18 @@ class SearchPathImporter:
         if self.find_file(name):
             return self
 
+    def find_spec(self, fullname, path=None, target=None):
+        self.log.debug(f"hook.find_spec({self}, {fullname}, {path}, {target})")
+        if self.create_loader:
+            if fullname == self.package or fullname == self.namespace:
+                return importlib.machinery.ModuleSpec(fullname, self)
+
+        match = self.re_ns.match(fullname)
+        if match:
+            if fq_path := self.find_file(match.group(1)):
+                return importlib.machinery.ModuleSpec(fullname, self, origin=fq_path)
+        return None
+
     def find_file(self, name):
         for each in self.searchpath:
             fq_path = os.path.join(each, name + ".py")
@@ -68,17 +83,27 @@ class SearchPathImporter:
 
     def load_module(self, fullname):
         self.log.debug(f"hook.load({fullname})")
+        # For backward compatibility, delegate to exec_module.
+        module = types.ModuleType(fullname)
+        return self.exec_module(module)
+
+    def exec_module(self, module):
+        fullname = module.__name__
+        self.log.debug(f"hook.load({module}) {fullname}")
 
         # build package for loader if it doesn't exist
         # don't need to check for create_loader here, checks in find_module
         if fullname == self.package or fullname == self.namespace:
             self.log.debug(f"hook.create_loader({fullname})")
             # make a new loader module
-            mod = imp.new_module(fullname)
+            # spec = importlib.util.spec_from_loader(fullname, loader=self)
+            # mod = importlib.util.module_from_spec(spec)
+            mod = types.ModuleType(fullname)
 
             # set a few properties required by PEP 302
             mod.__file__ = self.namespace
             mod.__name__ = fullname
+            # this is the only one needed for py3.11
             mod.__path__ = self.searchpath
             mod.__loader__ = self
             mod.__package__ = ".".join(fullname.split(".")[:-1])
@@ -147,12 +172,12 @@ class PluginManager:
             return
 
         self._imphook = SearchPathImporter(self.namespace, value, self.create_loader)
-        sys.meta_path.append(self._imphook)
+        self._imphook.install()
 
     def import_external(self, namespace=None):
         if not namespace:
             namespace = self.namespace
-        for entry_point in pkg_resources.iter_entry_points(namespace):
+        for entry_point in importlib_metadata.entry_points()[namespace]:
             module = entry_point.load()
             self.searchpath = (self.searchpath or []) + [
                 os.path.dirname(module.__file__)
@@ -165,6 +190,7 @@ class PluginManager:
 
     def register(self, typ):
         """register a plugin"""
+
         # should be able to combine class/instance namespace, and inherit from either
         # would need to store meta or rely on copy ctor
         def _func(cls):

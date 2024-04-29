@@ -14,19 +14,19 @@ import pluginmgr_test
 import pluginmgr
 
 
-@pytest.yield_fixture(autouse=True)
+@pytest.fixture(autouse=True)
 def set_loader():
     pluginmgr_test.set_create_loader(True)
     yield
 
 
 def test_static_import():
-    # skip this test for version 3+ since boxed doesn't seem to be working and
+    # skip this test for version 3+ since boxed(now forked) doesn't seem to be working and
     # it's only for created loaders
     if sys.version_info[0] >= 3:
         return
 
-    # NOTE this will fail if pytest-xdist --boxed isn't used because py.test
+    # NOTE this will fail if pytest-xdist --boxed (now forked) isn't used because py.test
     # has already loaded static0 so it's in the module cache
     with pytest.raises(ImportError):
         from pluginmgr_test.plugins import static0
