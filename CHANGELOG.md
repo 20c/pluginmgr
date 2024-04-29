@@ -4,6 +4,16 @@
 ## Unreleased
 
 
+## 1.2.0
+### Added
+- python 3.11, 3.12
+### Changed
+- use importlib instead of imp
+- update Importer to use 3.12 machinery
+### Removed
+- python 3.7
+
+
 ## 1.1.0
 ### Added
 - python 3.10
