@@ -8,6 +8,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 import pluginmgr_test
 
+
 def test_import_external_no_keyerror():
     try:
         pluginmgr_test.plugin.import_external()
