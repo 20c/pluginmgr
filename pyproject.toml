@@ -5,7 +5,7 @@ description = "lightweight python plugin system supporting config inheritance"
 readme = "README.md"
 authors = [{ name = "20C", email = "code@20c.com" }]
 license = { text = "Apache-2.0" }
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Topic :: Software Development",
     "Development Status :: 5 - Production/Stable",
@@ -32,6 +32,8 @@ dev-dependencies = [
     "pytest-cov>=2.10.1",
     "pytest-forked>=1",
     "tox>=4",
+    "tox-gh-actions>=3",
+    "tox-uv>=1.13.0",
 
     # linting
     "ruff>=0.1",
@@ -44,8 +46,8 @@ dev-dependencies = [
     "twine>=3.3.0",
 
     # docs
-    "markdown",
-    "markdown-include>=0.5,<1",
+    "markdown>3",
+    "markdown-include>=0.5",
     "mkdocs>=1"
 ]
 
