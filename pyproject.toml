@@ -1,11 +1,11 @@
-[tool.poetry]
+[project]
 name = "pluginmgr"
 version = "1.2.0"
 description = "lightweight python plugin system supporting config inheritance"
 readme = "README.md"
-repository = "https://github.com/20c/pluginmgr"
-authors = ["20C <code@20c.com>"]
-license = "Apache-2.0"
+authors = [{ name = "20C", email = "code@20c.com" }]
+license = { text = "Apache-2.0" }
+requires-python = ">=3.7"
 classifiers = [
     "Topic :: Software Development",
     "Development Status :: 5 - Production/Stable",
@@ -15,47 +15,53 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
+dependencies = ["munge>=1", "importlib-metadata>=1"]
+
+[project.urls]
+repository = "https://github.com/20c/pluginmgr"
 
 
-[tool.poetry.dependencies]
-python = "^3.8"
-munge = ">=1"
-importlib-metadata = ">=1"
+[tool.uv]
+dev-dependencies = [
+    # testing
+    "coverage>=5.3",
+    "pytest>=6.1.2",
+    "pytest-cov>=2.10.1",
+    "pytest-forked>=1",
+    "tox>=4",
 
+    # linting
+    "ruff>=0.1",
+    "pre-commit>=2.13",
 
-[tool.poetry.dev-dependencies]
-# testing
-coverage = ">=5.3"
-pytest = ">=6.1.2"
-pytest-cov = ">=2.10.1"
-pytest-forked = ">=1"
-tox = ">=4"
+    # ctl
+    "ctl>=1",
+    "jinja2>=3",
+    "tmpl>=1",
+    "twine>=3.3.0",
 
-# linting
-ruff = ">=0.1"
-pre-commit = ">=2.13"
-pyupgrade = ">=2.19"
-
-# ctl
-ctl = ">=1"
-jinja2 = ">=3"
-tmpl = ">=1"
-twine = ">=3.3.0"
-
-# docs
-markdown = "*"
-markdown-include = ">=0.5,<1"
-mkdocs = ">=1"
+    # docs
+    "markdown",
+    "markdown-include>=0.5,<1",
+    "mkdocs>=1"
+]
 
 [tool.pytest.ini_options]
 norecursedirs = ["data", "gen", ".tox"]
 minversion = "6.0"
 addopts = "--forked"
-testpaths = [
-    "tests",
+testpaths = ["tests"]
+
+[tool.ruff]
+extend-select = [
+    "I",  # isort
+    "UP",
 ]
 
+
 [build-system]
-requires = ["poetry-core>=1"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

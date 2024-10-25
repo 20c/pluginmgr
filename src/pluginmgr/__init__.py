@@ -1,11 +1,12 @@
 import importlib
 import importlib.util
-import types
-import importlib_metadata
 import logging
 import os
 import re
 import sys
+import types
+
+import importlib_metadata
 
 
 class SearchPathImporter(importlib.abc.MetaPathFinder, importlib.abc.Loader):
@@ -19,7 +20,7 @@ class SearchPathImporter(importlib.abc.MetaPathFinder, importlib.abc.Loader):
         self.package = namespace.split(".")[0]
         self.namespace = namespace
         self.log = logging.getLogger(__name__)
-        self.re_ns = re.compile(r"^%s\.(.*)$" % re.escape(self.namespace))
+        self.re_ns = re.compile(rf"^{re.escape(self.namespace)}\.(.*)$")
         self.log.debug(f"hook.compile({self.namespace})")
         self.searchpath = searchpath
         self.create_loader = create_loader
@@ -195,7 +196,7 @@ class PluginManager:
         # would need to store meta or rely on copy ctor
         def _func(cls):
             if typ in self._class:
-                raise ValueError("duplicated type name '%s'" % typ)
+                raise ValueError(f"duplicated type name '{str(typ)}'")
             cls.plugin_type = typ
             self._class[typ] = cls
             return cls
