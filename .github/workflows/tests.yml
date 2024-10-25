@@ -28,7 +28,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
       - name: install tox
-        run: uv tool install tox --with tov-uv,tox-gh-actions
+        run: uv tool install tox --with tox-uv,tox-gh-actions
       - name: Install python
         run: uv python install ${{ matrix.python-version }}
 #      - name: install project
