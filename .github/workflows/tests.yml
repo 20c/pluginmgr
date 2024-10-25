@@ -30,7 +30,7 @@ jobs:
       - name: Install python
         run: uv python install ${{ matrix.python-version }}
       - name: install project
-        run: uv sync --locked --all-extras --dev
+        run: uv sync --all-extras --dev
       - name: Run tests
         run: tox
       - name: Upload coverage
