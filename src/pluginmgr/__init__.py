@@ -177,7 +177,7 @@ class PluginManager:
     def import_external(self, namespace=None):
         if not namespace:
             namespace = self.namespace
-        for entry_point in importlib_metadata.entry_points()[namespace]:
+        for entry_point in importlib_metadata.entry_points(group=namespace):
             module = entry_point.load()
             self.searchpath = (self.searchpath or []) + [
                 os.path.dirname(module.__file__)
