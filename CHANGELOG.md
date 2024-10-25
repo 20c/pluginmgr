@@ -4,6 +4,11 @@
 ## Unreleased
 
 
+## 1.2.1
+### Fixed
+- error with importlib_metadata.entry_points
+
+
 ## 1.2.0
 ### Added
 - python 3.11, 3.12

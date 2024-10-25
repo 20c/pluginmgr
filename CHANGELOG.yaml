@@ -5,6 +5,9 @@ Unreleased:
   deprecated: []
   removed: []
   security: []
+1.2.1:
+  fixed:
+  - error with importlib_metadata.entry_points
 1.2.0:
   added:
   - python 3.11, 3.12

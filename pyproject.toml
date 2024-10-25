@@ -1,6 +1,6 @@
 [project]
 name = "pluginmgr"
-version = "1.2.0"
+version = "1.2.1"
 description = "lightweight python plugin system supporting config inheritance"
 readme = "README.md"
 authors = [{ name = "20C", email = "code@20c.com" }]
